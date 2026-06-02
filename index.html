@@ -48,42 +48,53 @@ const img = document.getElementById("comic");
 
 img.src = pages[current];
 
-function showPage(index, direction) {
-
-  img.style.transition = "none";
-  img.style.transform = translateX(${direction * 100}%);
-
-  setTimeout(() => {
-    img.src = pages[index];
-
-    img.onload = () => {
-      img.style.transition = "transform 0.3s ease";
-      img.style.transform = "translateX(0)";
-    };
-  }, 50);
-}
-
 function nextPage() {
   if (current < pages.length - 1) {
-    current++;
-    showPage(current, 1);
+
+    img.style.transform = "translateX(-100%)";
+
+    setTimeout(() => {
+      current++;
+      img.src = pages[current];
+
+      img.style.transition = "none";
+      img.style.transform = "translateX(100%)";
+
+      setTimeout(() => {
+        img.style.transition = "transform 0.3s ease";
+        img.style.transform = "translateX(0)";
+      }, 50);
+
+    }, 300);
   }
 }
 
 function prevPage() {
   if (current > 0) {
-    current--;
-    showPage(current, -1);
+
+    img.style.transform = "translateX(100%)";
+
+    setTimeout(() => {
+      current--;
+      img.src = pages[current];
+
+      img.style.transition = "none";
+      img.style.transform = "translateX(-100%)";
+
+      setTimeout(() => {
+        img.style.transition = "transform 0.3s ease";
+        img.style.transform = "translateX(0)";
+      }, 50);
+
+    }, 300);
   }
 }
 
-// ===== ТАПЫ =====
+// КЛИКИ
 
 document.addEventListener("click", function(e) {
 
-  const screenWidth = window.innerWidth;
-
-  if (e.clientX > screenWidth / 2) {
+  if (e.clientX > window.innerWidth / 2) {
     nextPage();
   } else {
     prevPage();
@@ -91,7 +102,7 @@ document.addEventListener("click", function(e) {
 
 });
 
-// ===== СВАЙПЫ =====
+// СВАЙПЫ
 
 let startX = 0;
 
