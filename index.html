@@ -1,36 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>Лес из бетона</title>
 
-  <title>Лес из бетона</title>
+<style>
+body {
+  margin: 0;
+  background: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
 
-  <style>
-
-    body {
-      margin: 0;
-      background: black;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    img {
-      width: 100%;
-      max-width: 1400px;
-      display: block;
-      margin-bottom: 20px;
-    }
-
-  </style>
+img {
+  max-width: 100%;
+  max-height: 100vh;
+  user-select: none;
+}
+</style>
 </head>
 
 <body>
 
-  <img loading="lazy" src="images/01.JPG">
-  <img loading="lazy" src="images/02.JPG">
-  
+<img id="comic">
+
+<script>
+const pages = [];
+
+for (let i = 1; i <= 91; i++) {
+  let number = String(i).padStart(2, '0');
+  pages.push(`images/${number}.JPG`);
+}
+
+let current = 0;
+const img = document.getElementById("comic");
+img.src = pages[current];
+
+// защита от быстрого перелистывания
+let canScroll = true;
+
+// ===== КОЛЕСО МЫШИ (ПК) =====
+window.addEventListener("wheel", function(event) {
+  if (!canScroll) return;
+  canScroll = false;
+
+  if (event.deltaY > 0 && current < pages.length - 1) {
+    current++;
+  }
+
+  if (event.deltaY < 0 && current > 0) {
+    current--;
+  }
+
+  img.src = pages[current];
+
+  setTimeout(() => canScroll = true, 200);
+});
+
+// ===== СВАЙПЫ ДЛЯ ТЕЛЕФОНА =====
+let startY = 0;
+let startX = 0;
+
+window.addEventListener("touchstart", function(e) {
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+});
+
+window.addEventListener("touchend", function(e) {
+  let endX = e.changedTouches[0].clientX;
+  let endY = e.changedTouches[0].clientY;
+
+  let diffX = startX - endX;
+  let diffY = startY - endY;
+
+  if (!canScroll) return;
+  canScroll = false;
+
+  // свайп влево (вперёд)
+  if (Math.abs(diffX) > Math.abs(diffY) && diffX > 30) {
+    if (current < pages.length - 1) current++;
+  }
+
+  // свайп вправо (назад)
+  if (Math.abs(diffX) > Math.abs(diffY) && diffX < -30) {
+    if (current > 0) current--;
+  }
+
+  img.src = pages[current];
+
+  setTimeout(() => canScroll = true, 200);
+});
+</script>
 
 </body>
 </html>
