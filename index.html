@@ -1,129 +1,42 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Лес из бетона</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-body {
-  margin: 0;
-  overflow: hidden;
-  background: black;
-}
+  <title>Лес из бетона</title>
 
-#viewer {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  position: relative;
-}
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-#comic {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  position: absolute;
-  transition: transform 0.3s ease;
-}
-</style>
+    img {
+      width: 100%;
+      max-width: 1400px;
+      display: block;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 
 <body>
 
-<div id="viewer">
-  <img id="comic">
-</div>
-
 <script>
-const pages = [];
-
 for (let i = 1; i <= 91; i++) {
+
   let number = String(i).padStart(2, '0');
-  pages.push(`images/${number}.jpg`);
+
+  let img = document.createElement("img");
+  img.loading = "lazy";
+  img.src = `images/${number}.jpg`;
+
+  document.body.appendChild(img);
 }
-
-let current = 0;
-
-const img = document.getElementById("comic");
-
-img.src = pages[current];
-
-function nextPage() {
-  if (current < pages.length - 1) {
-
-    img.style.transform = "translateX(-100%)";
-
-    setTimeout(() => {
-      current++;
-      img.src = pages[current];
-
-      img.style.transition = "none";
-      img.style.transform = "translateX(100%)";
-
-      setTimeout(() => {
-        img.style.transition = "transform 0.3s ease";
-        img.style.transform = "translateX(0)";
-      }, 50);
-
-    }, 300);
-  }
-}
-
-function prevPage() {
-  if (current > 0) {
-
-    img.style.transform = "translateX(100%)";
-
-    setTimeout(() => {
-      current--;
-      img.src = pages[current];
-
-      img.style.transition = "none";
-      img.style.transform = "translateX(-100%)";
-
-      setTimeout(() => {
-        img.style.transition = "transform 0.3s ease";
-        img.style.transform = "translateX(0)";
-      }, 50);
-
-    }, 300);
-  }
-}
-
-// КЛИКИ
-
-document.addEventListener("click", function(e) {
-
-  if (e.clientX > window.innerWidth / 2) {
-    nextPage();
-  } else {
-    prevPage();
-  }
-
-});
-
-// СВАЙПЫ
-
-let startX = 0;
-
-document.addEventListener("touchstart", function(e) {
-  startX = e.touches[0].clientX;
-});
-
-document.addEventListener("touchend", function(e) {
-
-  let endX = e.changedTouches[0].clientX;
-  let diffX = startX - endX;
-
-  if (diffX > 50) {
-    nextPage();
-  }
-
-  if (diffX < -50) {
-    prevPage();
-  }
-
-});
 </script>
 
 </body>
